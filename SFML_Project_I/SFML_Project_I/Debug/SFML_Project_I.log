@@ -1,0 +1,4 @@
+﻿  Game.cpp
+g:\gameplay-programming\gameplay_project_i\sfml_project_i\sfml_project_i\matrix3.h(11): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+  SFML_Project_I.vcxproj -> G:\Gameplay-Programming\Gameplay_Project_I\SFML_Project_I\Debug\SFML_Project_I.exe
+  SFML_Project_I.vcxproj -> G:\Gameplay-Programming\Gameplay_Project_I\SFML_Project_I\Debug\SFML_Project_I.pdb (Partial PDB)
