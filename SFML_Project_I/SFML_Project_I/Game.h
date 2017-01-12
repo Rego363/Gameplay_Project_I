@@ -17,6 +17,7 @@ public:
 private:
 	Window window;
 	bool isRunning = false;
+	bool showVertex(MyVector3 V1, MyVector3 V2, MyVector3 V3);
 	void initialize();
 	void update();
 	void draw();
@@ -29,6 +30,15 @@ private:
 	Clock clock;
 	Time elapsed;
 
+	bool safe = true;
+	bool jump;
+	MyVector3 gravity;
+	MyVector3 velocity;
+	float timeChange;
+	double totalTime;
+	const sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+
 	MyVector3 corner1;
 	MyVector3 corner2;
 	MyVector3 corner3;
@@ -37,6 +47,14 @@ private:
 	MyVector3 corner6;
 	MyVector3 corner7;
 	MyVector3 corner8;
+	MyVector3 cube1[8];
+	MyVector3 cube2[8];
+	MyVector3 cube3[8];
+	MyVector3 cube4[8];
+	MyVector3 cube5[8];
+	MyVector3 cube6[8];
+	MyVector3 cube7[8];
+	MyVector3 cube8[8];
 	Matrix3 scale;
 	Matrix3 oppoScale;
 	Matrix3 rotX;
@@ -45,8 +63,10 @@ private:
 	Matrix3 oppoRotY;
 	Matrix3 rotZ;
 	Matrix3 oppoRotZ;
-	Matrix3 translate;
-	Matrix3 oppoTranslate;
+	Matrix3 translateX;
+	Matrix3 oppoTranslateX;
+	Matrix3 translateY;
+	Matrix3 oppoTranslateY;
 	Matrix3 mold;
 	Matrix3 empty;
 	float rotationAngle = 0.1f;

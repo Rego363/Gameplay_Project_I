@@ -29,6 +29,30 @@ float MyVector3::getX()
 };
 
 /// <summary>
+/// Set the value of x
+/// </summary>
+void MyVector3::setX(float X)
+{
+	x = X;
+}
+
+/// <summary>
+/// Set the value of Y
+/// </summary>
+void MyVector3::setY(float Y)
+{
+	y = Y;
+}
+
+/// <summary>
+/// Set the value of Z
+/// </summary>
+void MyVector3::setZ(float Z)
+{
+	z = Z;
+}
+
+/// <summary>
 /// Returns the value of y
 /// </summary>
 float MyVector3::getY()
@@ -160,3 +184,7 @@ MyVector3 MyVector3::operator ^(MyVector3 V2)
 	return MyVector3(y * V2.z - z * V2.y, z * V2.x - x * V2.z, x * V2.y - y * V2.x);
 }
 
+MyVector3 MyVector3::crossProduct(MyVector3 v2)
+{
+	return MyVector3(-1 * ((z * v2.y) - (y * v2.z)), (z * v2.x) - (x * v2.z), (x * v2.y) - (y * v2.x));
+}

@@ -17,6 +17,9 @@ public:
 	float getX();
 	float getY();
 	float getZ();
+	void setX(float X);
+	void setY(float Y);
+	void setZ(float Z);
 	float length();
 	float lengthSquared();
 	void normalise();
@@ -28,5 +31,6 @@ public:
 	MyVector3 operator *(float k);
 	MyVector3 operator *(int k);
 	MyVector3 operator ^(MyVector3 V2);
+	MyVector3 crossProduct(MyVector3 V2);
 	//std::string toString();
 };
