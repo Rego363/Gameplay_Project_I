@@ -1,6 +1,12 @@
 #include <iostream>
+#include <GL/glew.h>
+#include <GL/wglew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Matrix3.h"
@@ -15,13 +21,15 @@ public:
 	~Game();
 	void run();
 private:
-	Window window;
+	sf::RenderWindow window;
 	bool isRunning = false;
 	bool showVertex(MyVector3 V1, MyVector3 V2, MyVector3 V3);
 	void initialize();
 	void update();
 	void draw();
 	void unload();
+	void renderFunction(sf::RenderWindow &window);
+
 	const int primitives;
 
 	Keyboard keyPressed;
@@ -69,5 +77,9 @@ private:
 	Matrix3 oppoTranslateY;
 	Matrix3 mold;
 	Matrix3 empty;
-	float rotationAngle = 0.1f;
+	sf::Vector2f cameraPos;
+	float rotationAngle = 0.2228f;
+	float rot;
+	float tran;
+	bool rotSwitch;
 };

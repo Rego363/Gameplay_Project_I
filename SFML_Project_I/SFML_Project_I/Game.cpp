@@ -44,8 +44,15 @@ void Game::initialize()
 	gluPerspective(45.0, window.getSize().x / window.getSize().y, 1.0, 500.0);
 	glMatrixMode(GL_MODELVIEW);
 
+
+	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(800, 600));
+	
+	view.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
+	view.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
+	view.setCenter(sf::Vector2f(corner8.getZ() + corner1.getZ(), corner8.getY() + corner1.getY()));
+	view.setRotation(90.0f);
 	gravity = MyVector3(0.0f, -9.8f, 0.0f);
-	velocity = MyVector3(0.0f, 6.0f, 0.0f);
+	velocity = MyVector3(0.0f, 7.0f, 0.0f);
 
 	// glNewList(index, GL_COMPILE);
 	// Creates a new Display List
@@ -134,14 +141,14 @@ void Game::initialize()
 	cube8[7] = MyVector3(1.0f, -5.0f, -47.0f);
 
 
-	//corner1 = MyVector3(1.0f, -2.7439f, -11.5331f);
-	//corner2 = MyVector3(-1.0f, -2.7439f, -11.5331f);
-	//corner3 = MyVector3(-1.0f, -4.7438f, -11.5331f);
-	//corner4 = MyVector3(1.0f, -4.7438f, -11.5331f);
-	//corner5 = MyVector3(1.0f, -2.7439f, -13.5341f);
-	//corner6 = MyVector3(-1.0f, -2.7439f, -13.5341f);
-	//corner7 = MyVector3(-1.0f, -4.7438f, -13.5341f);
-	//corner8 = MyVector3(1.0f, -4.7438f, -13.5341f);
+	//corner1 = MyVector3(0.5f, 0.5f, -2.5f);
+	//corner2 = MyVector3(-0.5f, 0.5f, -2.5f);
+	//corner3 = MyVector3(-0.5f, -0.5f, -2.5f);
+	//corner4 = MyVector3(0.5f, -0.5f, -2.5f);
+	//corner5 = MyVector3(0.5f, 0.5f, -3.5f);
+	//corner6 = MyVector3(-0.5f, 0.5f, -3.5f);
+	//corner7 = MyVector3(-0.5f, -0.5f, -3.5f);
+	//corner8 = MyVector3(0.5f, -0.5f, -3.5f);
 
 	scale = scale.scale(99.9f, 99.9f);
 	oppoScale = oppoScale.scale(99.9f, 99.9f);
@@ -151,7 +158,7 @@ void Game::initialize()
 	translateY = translateY.translateY(0.0001f, 0.0001f);
 	oppoTranslateY = oppoTranslateY.translateY(-0.0001f, -0.0001f);
 	rotX = rotX.rotationX(rotationAngle);
-	oppoRotX = oppoRotX.rotationX(-rotationAngle);
+	oppoRotX = rotX.inverse();//oppoRotX = oppoRotX.rotationX(-rotationAngle);
 	rotY = rotY = rotY.rotationY(rotationAngle);
 	oppoRotY = oppoRotY = oppoRotY.rotationY(-rotationAngle);
 	rotZ = rotZ.rotationZ(rotationAngle); 
@@ -162,7 +169,7 @@ void Game::update()
 {
 	elapsed = clock.getElapsedTime();
 
-	
+	view.setCenter()
 
 	glNewList(index, GL_COMPILE);
 	/*glBegin(GL_POINTS);
@@ -171,7 +178,7 @@ void Game::update()
 		glVertex3f(corner1.getX(), corner1.getY(), corner1.getZ());
 	}*/
 
-
+	//Cube 8
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -220,6 +227,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Cube 7
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -268,6 +276,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Cube 6
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -316,6 +325,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Cube 5
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -364,6 +374,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Cube 4
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -412,6 +423,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Cube 3
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -460,6 +472,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Cube 2
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -508,6 +521,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Cube 1
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -556,6 +570,7 @@ void Game::update()
 	}
 	glEnd();
 
+	//Player cube
 	glBegin(GL_QUADS);
 	{
 		//Front Face
@@ -653,27 +668,19 @@ void Game::update()
 
 	if (keyPressed.isKeyPressed(sf::Keyboard::W))
 	{
-		//Trying to rotate while jumping
-		//Fix the origin that it is rotating around
-		float yOffset = corner1.getY() - 0.5f;
-		float zOffset = 12.5f;
-		//float zOffset = -corner1.getZ() - 0.5f;
-		corner1.setY(corner1.getY() + yOffset);
-		corner2.setY(corner2.getY() + yOffset);
-		corner3.setY(corner3.getY() + yOffset);
-		corner4.setY(corner4.getY() + yOffset);
-		corner5.setY(corner5.getY() + yOffset);
-		corner6.setY(corner6.getY() + yOffset);
-		corner7.setY(corner7.getY() + yOffset);
-		corner8.setY(corner8.getY() + yOffset);
-		corner1.setZ(corner1.getZ() + zOffset);
-		corner2.setZ(corner2.getZ() + zOffset);
-		corner3.setZ(corner3.getZ() + zOffset);
-		corner4.setZ(corner4.getZ() + zOffset);
-		corner5.setZ(corner5.getZ() + zOffset);
-		corner6.setZ(corner6.getZ() + zOffset);
-		corner7.setZ(corner7.getZ() + zOffset);
-		corner8.setZ(corner8.getZ() + zOffset);
+		float xOffset = (corner1.getX() + corner8.getX()) / 2.0f;
+		float yOffset = (corner1.getY() + corner8.getY()) / 2.0f;
+		float zOffset = (corner1.getZ() + corner8.getZ()) / 2.0f;
+		MyVector3 offset = MyVector3(xOffset, yOffset, zOffset);
+
+		corner1 = corner1 - offset;
+		corner2 = corner2 - offset;
+		corner3 = corner3 - offset;
+		corner4 = corner4 - offset;
+		corner5 = corner5 - offset;
+		corner6 = corner6 - offset;
+		corner7 = corner7 - offset;
+		corner8 = corner8 - offset;
 		corner1 = rotX * corner1;
 		corner2 = rotX * corner2;
 		corner3 = rotX * corner3;
@@ -681,34 +688,30 @@ void Game::update()
 		corner5 = rotX * corner5;
 		corner6 = rotX * corner6;
 		corner7 = rotX * corner7;
-		corner8 = rotX * corner8;
-		corner1.setY(corner1.getY() - yOffset);
-		corner2.setY(corner2.getY() - yOffset);
-		corner3.setY(corner3.getY() - yOffset);
-		corner4.setY(corner4.getY() - yOffset);
-		corner5.setY(corner5.getY() - yOffset);
-		corner6.setY(corner6.getY() - yOffset);
-		corner7.setY(corner7.getY() - yOffset);
-		corner8.setY(corner8.getY() - yOffset);
-		corner1.setZ(corner1.getZ() - zOffset);
-		corner2.setZ(corner2.getZ() - zOffset);
-		corner3.setZ(corner3.getZ() - zOffset);
-		corner4.setZ(corner4.getZ() - zOffset);
-		corner5.setZ(corner5.getZ() - zOffset);
-		corner6.setZ(corner6.getZ() - zOffset);
-		corner7.setZ(corner7.getZ() - zOffset);
-		corner8.setZ(corner8.getZ() - zOffset);
+		corner8 = rotX * corner8; 
+		corner1 = corner1 + offset;
+		corner2 = corner2 + offset;
+		corner3 = corner3 + offset;
+		corner4 = corner4 + offset;
+		corner5 = corner5 + offset;
+		corner6 = corner6 + offset;
+		corner7 = corner7 + offset;
+		corner8 = corner8 + offset;
 	}
 	else if (keyPressed.isKeyPressed(sf::Keyboard::S))
 	{
-		corner1.setZ(corner1.getZ() + 6.0f);
-		corner2.setZ(corner2.getZ() + 6.0f);
-		corner3.setZ(corner3.getZ() + 6.0f);
-		corner4.setZ(corner4.getZ() + 6.0f);
-		corner5.setZ(corner5.getZ() + 6.0f);
-		corner6.setZ(corner6.getZ() + 6.0f);
-		corner7.setZ(corner7.getZ() + 6.0f);
-		corner8.setZ(corner8.getZ() + 6.0f);
+		float xOffset = (corner1.getX() + corner8.getX()) / 2.0f;
+		float yOffset = (corner1.getY() + corner8.getY()) / 2.0f;
+		float zOffset = (corner1.getZ() + corner8.getZ()) / 2.0f;
+		MyVector3 offset = MyVector3(xOffset, yOffset, zOffset);
+		corner1 = corner1 - offset;
+		corner2 = corner2 - offset;
+		corner3 = corner3 - offset;
+		corner4 = corner4 - offset;
+		corner5 = corner5 - offset;
+		corner6 = corner6 - offset;
+		corner7 = corner7 - offset;
+		corner8 = corner8 - offset;
 		corner1 = oppoRotX * corner1;
 		corner2 = oppoRotX * corner2;
 		corner3 = oppoRotX * corner3;
@@ -717,26 +720,30 @@ void Game::update()
 		corner6 = oppoRotX * corner6;
 		corner7 = oppoRotX * corner7;
 		corner8 = oppoRotX * corner8;
-		corner1.setZ(corner1.getZ() - 6.0f);
-		corner2.setZ(corner2.getZ() - 6.0f);
-		corner3.setZ(corner3.getZ() - 6.0f);
-		corner4.setZ(corner4.getZ() - 6.0f);
-		corner5.setZ(corner5.getZ() - 6.0f);
-		corner6.setZ(corner6.getZ() - 6.0f);
-		corner7.setZ(corner7.getZ() - 6.0f);
-		corner8.setZ(corner8.getZ() - 6.0f);
+		corner1 = corner1 + offset;
+		corner2 = corner2 + offset;
+		corner3 = corner3 + offset;
+		corner4 = corner4 + offset;
+		corner5 = corner5 + offset;
+		corner6 = corner6 + offset;
+		corner7 = corner7 + offset;
+		corner8 = corner8 + offset;
 	}
 
 	if (keyPressed.isKeyPressed(sf::Keyboard::A))
 	{
-		corner1.setZ(corner1.getZ() + 6.0f);
-		corner2.setZ(corner2.getZ() + 6.0f);
-		corner3.setZ(corner3.getZ() + 6.0f);
-		corner4.setZ(corner4.getZ() + 6.0f);
-		corner5.setZ(corner5.getZ() + 6.0f);
-		corner6.setZ(corner6.getZ() + 6.0f);
-		corner7.setZ(corner7.getZ() + 6.0f);
-		corner8.setZ(corner8.getZ() + 6.0f);
+		float xOffset = (corner1.getX() + corner8.getX()) / 2.0f;
+		float yOffset = (corner1.getY() + corner8.getY()) / 2.0f;
+		float zOffset = (corner1.getZ() + corner8.getZ()) / 2.0f;
+		MyVector3 offset = MyVector3(xOffset, yOffset, zOffset);
+		corner1 = corner1 - offset;
+		corner2 = corner2 - offset;
+		corner3 = corner3 - offset;
+		corner4 = corner4 - offset;
+		corner5 = corner5 - offset;
+		corner6 = corner6 - offset;
+		corner7 = corner7 - offset;
+		corner8 = corner8 - offset;
 		corner1 = rotY * corner1;
 		corner2 = rotY * corner2;
 		corner3 = rotY * corner3;
@@ -745,28 +752,32 @@ void Game::update()
 		corner6 = rotY * corner6;
 		corner7 = rotY * corner7;
 		corner8 = rotY * corner8;
-		corner1.setZ(corner1.getZ() - 6.0f);
-		corner2.setZ(corner2.getZ() - 6.0f);
-		corner3.setZ(corner3.getZ() - 6.0f);
-		corner4.setZ(corner4.getZ() - 6.0f);
-		corner5.setZ(corner5.getZ() - 6.0f);
-		corner6.setZ(corner6.getZ() - 6.0f);
-		corner7.setZ(corner7.getZ() - 6.0f);
-		corner8.setZ(corner8.getZ() - 6.0f);
+		corner1 = corner1 + offset;
+		corner2 = corner2 + offset;
+		corner3 = corner3 + offset;
+		corner4 = corner4 + offset;
+		corner5 = corner5 + offset;
+		corner6 = corner6 + offset;
+		corner7 = corner7 + offset;
+		corner8 = corner8 + offset;
 
  
 
 	}
 	else if (keyPressed.isKeyPressed(sf::Keyboard::D))
 	{
-		corner1.setZ(corner1.getZ() + 6.0f);
-		corner2.setZ(corner2.getZ() + 6.0f);
-		corner3.setZ(corner3.getZ() + 6.0f);
-		corner4.setZ(corner4.getZ() + 6.0f);
-		corner5.setZ(corner5.getZ() + 6.0f);
-		corner6.setZ(corner6.getZ() + 6.0f);
-		corner7.setZ(corner7.getZ() + 6.0f);
-		corner8.setZ(corner8.getZ() + 6.0f);
+		float xOffset = (corner1.getX() + corner8.getX()) / 2.0f;
+		float yOffset = (corner1.getY() + corner8.getY()) / 2.0f;
+		float zOffset = (corner1.getZ() + corner8.getZ()) / 2.0f;
+		MyVector3 offset = MyVector3(xOffset, yOffset, zOffset);
+		corner1 = corner1 - offset;
+		corner2 = corner2 - offset;
+		corner3 = corner3 - offset;
+		corner4 = corner4 - offset;
+		corner5 = corner5 - offset;
+		corner6 = corner6 - offset;
+		corner7 = corner7 - offset;
+		corner8 = corner8 - offset;
 		corner1 = oppoRotY * corner1;
 		corner2 = oppoRotY * corner2;
 		corner3 = oppoRotY * corner3;
@@ -775,26 +786,30 @@ void Game::update()
 		corner6 = oppoRotY * corner6;
 		corner7 = oppoRotY * corner7;
 		corner8 = oppoRotY * corner8;
-		corner1.setZ(corner1.getZ() - 6.0f);
-		corner2.setZ(corner2.getZ() - 6.0f);
-		corner3.setZ(corner3.getZ() - 6.0f);
-		corner4.setZ(corner4.getZ() - 6.0f);
-		corner5.setZ(corner5.getZ() - 6.0f);
-		corner6.setZ(corner6.getZ() - 6.0f);
-		corner7.setZ(corner7.getZ() - 6.0f);
-		corner8.setZ(corner8.getZ() - 6.0f);
+		corner1 = corner1 + offset;
+		corner2 = corner2 + offset;
+		corner3 = corner3 + offset;
+		corner4 = corner4 + offset;
+		corner5 = corner5 + offset;
+		corner6 = corner6 + offset;
+		corner7 = corner7 + offset;
+		corner8 = corner8 + offset;
 	}
 
 	if (keyPressed.isKeyPressed(sf::Keyboard::Q))
 	{
-		corner1.setZ(corner1.getZ() + 6.0f);
-		corner2.setZ(corner2.getZ() + 6.0f);
-		corner3.setZ(corner3.getZ() + 6.0f);
-		corner4.setZ(corner4.getZ() + 6.0f);
-		corner5.setZ(corner5.getZ() + 6.0f);
-		corner6.setZ(corner6.getZ() + 6.0f);
-		corner7.setZ(corner7.getZ() + 6.0f);
-		corner8.setZ(corner8.getZ() + 6.0f);
+		float xOffset = (corner1.getX() + corner8.getX()) / 2.0f;
+		float yOffset = (corner1.getY() + corner8.getY()) / 2.0f;
+		float zOffset = (corner1.getZ() + corner8.getZ()) / 2.0f;
+		MyVector3 offset = MyVector3(xOffset, yOffset, zOffset);
+		corner1 = corner1 - offset;
+		corner2 = corner2 - offset;
+		corner3 = corner3 - offset;
+		corner4 = corner4 - offset;
+		corner5 = corner5 - offset;
+		corner6 = corner6 - offset;
+		corner7 = corner7 - offset;
+		corner8 = corner8 - offset;
 		corner1 = rotZ * corner1;
 		corner2 = rotZ * corner2;
 		corner3 = rotZ * corner3;
@@ -803,25 +818,29 @@ void Game::update()
 		corner6 = rotZ * corner6;
 		corner7 = rotZ * corner7;
 		corner8 = rotZ * corner8;
-		corner1.setZ(corner1.getZ() - 6.0f);
-		corner2.setZ(corner2.getZ() - 6.0f);
-		corner3.setZ(corner3.getZ() - 6.0f);
-		corner4.setZ(corner4.getZ() - 6.0f);
-		corner5.setZ(corner5.getZ() - 6.0f);
-		corner6.setZ(corner6.getZ() - 6.0f);
-		corner7.setZ(corner7.getZ() - 6.0f);
-		corner8.setZ(corner8.getZ() - 6.0f);
+		corner1 = corner1 + offset;
+		corner2 = corner2 + offset;
+		corner3 = corner3 + offset;
+		corner4 = corner4 + offset;
+		corner5 = corner5 + offset;
+		corner6 = corner6 + offset;
+		corner7 = corner7 + offset;
+		corner8 = corner8 + offset;
 	}
 	else if (keyPressed.isKeyPressed(sf::Keyboard::E))
 	{
-		corner1.setZ(corner1.getZ() + 6.0f);
-		corner2.setZ(corner2.getZ() + 6.0f);
-		corner3.setZ(corner3.getZ() + 6.0f);
-		corner4.setZ(corner4.getZ() + 6.0f);
-		corner5.setZ(corner5.getZ() + 6.0f);
-		corner6.setZ(corner6.getZ() + 6.0f);
-		corner7.setZ(corner7.getZ() + 6.0f);
-		corner8.setZ(corner8.getZ() + 6.0f);
+		float xOffset = (corner1.getX() + corner8.getX()) / 2.0f;
+		float yOffset = (corner1.getY() + corner8.getY()) / 2.0f;
+		float zOffset = (corner1.getZ() + corner8.getZ()) / 2.0f;
+		MyVector3 offset = MyVector3(xOffset, yOffset, zOffset);
+		corner1 = corner1 - offset;
+		corner2 = corner2 - offset;
+		corner3 = corner3 - offset;
+		corner4 = corner4 - offset;
+		corner5 = corner5 - offset;
+		corner6 = corner6 - offset;
+		corner7 = corner7 - offset;
+		corner8 = corner8 - offset;
 		corner1 = oppoRotZ * corner1;
 		corner2 = oppoRotZ * corner2;
 		corner3 = oppoRotZ * corner3;
@@ -829,17 +848,18 @@ void Game::update()
 		corner5 = oppoRotZ * corner5;
 		corner6 = oppoRotZ * corner6;
 		corner7 = oppoRotZ * corner7;
-		corner8 = oppoRotZ * corner8; 
-		corner1.setZ(corner1.getZ() - 6.0f);
-		corner2.setZ(corner2.getZ() - 6.0f);
-		corner3.setZ(corner3.getZ() - 6.0f);
-		corner4.setZ(corner4.getZ() - 6.0f);
-		corner5.setZ(corner5.getZ() - 6.0f);
-		corner6.setZ(corner6.getZ() - 6.0f);
-		corner7.setZ(corner7.getZ() - 6.0f);
-		corner8.setZ(corner8.getZ() - 6.0f);
+		corner8 = oppoRotZ * corner8;
+		corner1 = corner1 + offset;
+		corner2 = corner2 + offset;
+		corner3 = corner3 + offset;
+		corner4 = corner4 + offset;
+		corner5 = corner5 + offset;
+		corner6 = corner6 + offset;
+		corner7 = corner7 + offset;
+		corner8 = corner8 + offset;
 	}
 
+	//Scale
 	if (keyPressed.isKeyPressed(sf::Keyboard::X))
 	{
 		corner1 = scale * corner1;
@@ -863,6 +883,7 @@ void Game::update()
 		corner8 = oppoScale * corner8;
 	}
 
+	// X Translate
 	if (keyPressed.isKeyPressed(sf::Keyboard::Left))
 	{
 		//corner1.setZ(corner1.getZ() + 6.0f);
@@ -937,6 +958,7 @@ void Game::update()
 		corner8 = MyVector3(corner8.getX() + 0.001f, corner8.getY(), corner8.getZ());
 	}
 
+	// Y Translate
 	if (keyPressed.isKeyPressed(sf::Keyboard::Up))
 	{
 		//corner1 = translateY * corner1;
@@ -976,6 +998,7 @@ void Game::update()
 		corner8 = MyVector3(corner8.getX(), corner8.getY() - 0.001f, corner8.getZ());
 	}
 
+	// Z Translate
 	if (keyPressed.isKeyPressed(sf::Keyboard::J))
 	{
 		//corner1 = translateY * corner1;
@@ -1015,6 +1038,25 @@ void Game::update()
 		corner8 = MyVector3(corner8.getX(), corner8.getY() , corner8.getZ()- 0.001f);
 	}
 	
+	if (keyPressed.isKeyPressed(sf::Keyboard::PageDown))
+	{
+		rot++;
+	}
+	else if (keyPressed.isKeyPressed(sf::Keyboard::PageUp))
+	{
+		rot--;
+	}
+
+	if (keyPressed.isKeyPressed(sf::Keyboard::T))
+	{
+		tran++;
+	}
+	else if (keyPressed.isKeyPressed(sf::Keyboard::R))
+	{
+		tran--;
+	}
+
+	//Jump
 	if (keyPressed.isKeyPressed(sf::Keyboard::Space))
 	{
 		jump = true;
@@ -1027,31 +1069,48 @@ void Game::update()
 
 	if (jump == true)
 	{
-		float zOffeset = corner1.getZ() - 0.5f;
-		corner1.setZ(corner1.getZ() + zOffeset);
-		corner2.setZ(corner2.getZ() + zOffeset);
-		corner3.setZ(corner3.getZ() + zOffeset);
-		corner4.setZ(corner4.getZ() + zOffeset);
-		corner5.setZ(corner5.getZ() + zOffeset);
-		corner6.setZ(corner6.getZ() + zOffeset);
-		corner7.setZ(corner7.getZ() + zOffeset);
-		corner8.setZ(corner8.getZ() + zOffeset);
-		corner1 = rotX * corner1;
-		corner2 = rotX * corner2;
-		corner3 = rotX * corner3;
-		corner4 = rotX * corner4;
-		corner5 = rotX * corner5;
-		corner6 = rotX * corner6;
-		corner7 = rotX * corner7;
-		corner8 = rotX * corner8;
-		corner1.setZ(corner1.getZ() - zOffeset);
-		corner2.setZ(corner2.getZ() - zOffeset);
-		corner3.setZ(corner3.getZ() - zOffeset);
-		corner4.setZ(corner4.getZ() - zOffeset);
-		corner5.setZ(corner5.getZ() - zOffeset);
-		corner6.setZ(corner6.getZ() - zOffeset);
-		corner7.setZ(corner7.getZ() - zOffeset);
-		corner8.setZ(corner8.getZ() - zOffeset);
+		float xOffset = (corner1.getX() + corner8.getX()) / 2.0f;
+		float yOffset = (corner1.getY() + corner8.getY()) / 2.0f;
+		float zOffset = (corner1.getZ() + corner8.getZ()) / 2.0f;
+		MyVector3 offset = MyVector3(xOffset, yOffset, zOffset);
+		corner1 = corner1 - offset;
+		corner2 = corner2 - offset;
+		corner3 = corner3 - offset;
+		corner4 = corner4 - offset;
+		corner5 = corner5 - offset;
+		corner6 = corner6 - offset;
+		corner7 = corner7 - offset;
+		corner8 = corner8 - offset;
+		if (rotSwitch)
+		{
+			corner1 = rotX * corner1;
+			corner2 = rotX * corner2;
+			corner3 = rotX * corner3;
+			corner4 = rotX * corner4;
+			corner5 = rotX * corner5;
+			corner6 = rotX * corner6;
+			corner7 = rotX * corner7;
+			corner8 = rotX * corner8;
+		}
+		else if (!rotSwitch)
+		{
+			corner1 = oppoRotX * corner1;
+			corner2 = oppoRotX * corner2;
+			corner3 = oppoRotX * corner3;
+			corner4 = oppoRotX * corner4;
+			corner5 = oppoRotX * corner5;
+			corner6 = oppoRotX * corner6;
+			corner7 = oppoRotX * corner7;
+			corner8 = oppoRotX * corner8;
+		}
+		corner1 = corner1 + offset;
+		corner2 = corner2 + offset;
+		corner3 = corner3 + offset;
+		corner4 = corner4 + offset;
+		corner5 = corner5 + offset;
+		corner6 = corner6 + offset;
+		corner7 = corner7 + offset;
+		corner8 = corner8 + offset;
 		totalTime = totalTime + timeChange;
 		corner1.setY(corner1.getY() + velocity.getY() * timeChange + 0.5 * gravity.getY() * (timeChange* timeChange));
 		corner2.setY(corner2.getY() + velocity.getY() * timeChange + 0.5 * gravity.getY() * (timeChange* timeChange));
@@ -1062,22 +1121,42 @@ void Game::update()
 		corner7.setY(corner7.getY() + velocity.getY() * timeChange + 0.5 * gravity.getY() * (timeChange* timeChange));
 		corner8.setY(corner8.getY() + velocity.getY() * timeChange + 0.5 * gravity.getY() * (timeChange* timeChange));
 		velocity.setY(velocity.getY() + gravity.getY() * timeChange);
-		if (corner8.getY() <= -3.0f && safe == true)
+		// How do I straighten up the cube when it lands?
+		if ((corner1.getY() <= -2.0f && corner8.getY() <= -3.0f) || (corner8.getY() <= -2.0f && corner1.getY() <= -3.0f) && safe == true && velocity.getY() < 1)
 		{
-			corner1.setY(-2.0f);
-			corner2.setY(-2.0f);
-			corner3.setY(-3.0f);
-			corner4.setY(-3.0f);
-			corner5.setY(-2.0f);
-			corner6.setY(-2.0f);
-			corner7.setY(-3.0f);
-			corner8.setY(-3.0f);
+			//corner1 = MyVector3(0.5f, -2.0f, -12.0f);
+			//corner2 = MyVector3(-0.5f, -2.0f, -12.0f);
+			//corner3 = MyVector3(-0.5f, -3.0f, -12.0f);
+			//corner4 = MyVector3(0.5f, -3.0f, -12.0f);
+			//corner5 = MyVector3(0.5f, -2.0f, -13.0f);
+			//corner6 = MyVector3(-0.5f, -2.0f, -13.0f);
+			//corner7 = MyVector3(-0.5f, -3.0f, -13.0f);
+			//corner8 = MyVector3(0.5f, -3.0f, -13.0f);
+
 			jump = false;
-			velocity.setY(6.0f);
+			velocity.setY(7.0f);
+			if (rotSwitch)
+			{
+				rotSwitch = false;
+
+				//corner1.setX(-corner1.getX());
+				//corner2.setX(-corner2.getX());
+				//corner3.setX(-corner3.getX());
+				//corner4.setX(-corner4.getX());
+				//corner5.setX(-corner5.getX());
+				//corner6.setX(-corner6.getX());
+				//corner7.setX(-corner7.getX());
+				//corner8.setX(-corner8.getX());
+			}
+			else if (!rotSwitch)
+			{
+				rotSwitch = true;
+			}
+
 		}
 	}
 
-	if (safe == false && corner8.getY() <= -3.0f)
+	if (safe == false && corner8.getY() <= -1.0f)
 	{
 		exit;
 	}
@@ -1107,11 +1186,26 @@ void Game::draw()
 {
 	cout << "Drawing" << endl;
 
+	//display rendered frame on screen
+	//renderFunction(window);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	cout << "Drawing Cube " << current << endl;
 	glLoadIdentity();
 	//glRotatef(rotationAngle, 0, 1, 0); // Rotates the camera on Y Axis
+
+	cameraPos.x = corner1.getZ() + 10.0f - (window.getSize().x / 2);
+	cameraPos.y = corner1.getY() + 10.0f - (window.getSize().y / 2);
+
+	
+
+	view.reset(sf::FloatRect(cameraPos.x, cameraPos.y, window.getSize().x, window.getSize().y));
+
+	window.setView(view);
+
+	//glTranslatef(11.0f, 2.0f, 2.0f);
+	//glRotatef(60.0f, 0.0f, 1.0f, 0.0f);
 
 	glCallList(current);
 
@@ -1124,21 +1218,25 @@ void Game::unload()
 	cout << "Cleaning up" << endl;
 }
 
-/// <summary>
-/// Method to see if a point is facing towards or away from the screen
-/// </summary>
-/// <param name="sender"></param>
-/// <param name="e"></param>
-bool Game::showVertex(MyVector3 v1, MyVector3 v2, MyVector3 v3)
-{
-	v2 = v2 - v1;
-	v3 = v3 - v1;
-	if ((v2.crossProduct(v3)).getZ() < 0)
-	{//Facing screen
-		return true;
-	}
-	else
-	{// Facing away from screen
-		return false;
-	}
-}
+//void Game::renderFunction(sf::RenderWindow &window) {
+//	window.SetActive();
+//
+//	glDisable(GL_COLOR_ARRAY);
+//	glDisable(GL_TEXTURE_COORD_ARRAY);
+//
+//	glUseProgram(ProgramId);
+//	OnGLError("DRAW_ERROR: Could not use the shader program");
+//
+//	glClear(/*GL_COLOR_BUFFER_BIT | */GL_DEPTH_BUFFER_BIT);
+//	glUniformMatrix4fv(ModelMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+//	glUniformMatrix4fv(ViewMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(ViewMatrix));
+//	glUniformMatrix4fv(ProjectionMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
+//	OnGLError("ERROR: Could not set the shader uniforms");
+//
+//	glBindVertexArray(VaoId);
+//	OnGLError("ERROR: Could not bind the VAO for drawing purposes");
+//
+//	glDrawElements(GL_TRIANGLES, 10000, GL_UNSIGNED_INT, (GLvoid*)0);
+//	OnGLError("ERROR: Could not draw the cube");
+//
+//}
