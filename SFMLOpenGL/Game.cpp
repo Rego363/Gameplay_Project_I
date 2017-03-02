@@ -30,7 +30,7 @@ int comp_count;		// Component of texture
 
 unsigned char* img_data;		// image data
 
-mat4 mvp, projection, view, model1, model2, model3;			// Model View Projection
+mat4 mvp, projection, view, playerModel;			// Model View Projection
 
 Game::Game() : 
 	window(VideoMode(800, 600), 
@@ -47,8 +47,35 @@ Game::Game(sf::ContextSettings settings) :
 	playerCube()
 	//enemyCube()
 {
-	enemyCube[0] = EnemyCube();
-	enemyCube[1] = EnemyCube();
+	for (int i = 0; i < S_NUMOFENEMIES; i++)
+	{
+
+		rnd = rand() % 4;
+		enemyModel[i] = translate(enemyModel[i], glm::vec3(0, 0, -20 * rnd));
+		zOffset = -20 * rnd - 100;
+
+		rnd = (rand() % 2) + 1;
+		if (rnd == 1)
+		{
+			sign = false;
+		}
+		else
+		{
+			sign = true;
+		}
+		rnd = rand() % 4;
+
+		if (sign)
+		{
+			rnd = -rnd;
+		}
+		
+		enemyModel[i] = translate(enemyModel[i], glm::vec3(rnd * 5.0f, 0, -100));
+		enemyCube[i] = EnemyCube(glm::vec3(rnd * 5.0f, 0, zOffset));
+
+
+	}
+
 }
 
 Game::~Game(){}
@@ -78,32 +105,22 @@ void Game::run()
 			{
 				jump = true;
 			}
-			
+
+			playerCube.update();
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				// Set Model Rotation
 				//model = rotate(model, 0.01f, glm::vec3(0, 1, 0)); // Rotate
-				model1 = translate(model1, glm::vec3(-0.1,0,0));
+				playerModel = translate(playerModel, glm::vec3(-0.1,0,0));
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
 				// Set Model Rotation
 				//model = rotate(model, -0.01f, glm::vec3(0, 1, 0)); // Rotate
-				model1 = translate(model1, glm::vec3(0.1, 0, 0));
+				playerModel = translate(playerModel, glm::vec3(0.1, 0, 0));
 			}
 
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-			{
-				// Set Model Rotation
-				model1 = rotate(model1, -0.01f, glm::vec3(1, 0, 0)); // Rotate
-			}
-
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-			{
-				// Set Model Rotation
-				model1 = rotate(model1, 0.01f, glm::vec3(1, 0, 0)); // Rotate
-			}
 		}
 
 		update();
@@ -120,8 +137,6 @@ void Game::run()
 void Game::initialize()
 {
 	gravity = MyVector3(0, 9.8, 0);
-	model2 = translate(model2, glm::vec3(5.0f, 0, -100));
-	model3 = translate(model3, glm::vec3(-5.0f, 0, -100));
 
 	velocity = MyVector3(0, 0, 0);
 	totalTime = 0;
@@ -324,7 +339,7 @@ void Game::initialize()
 		);
 
 	// Model matrix
-	model1 = mat4(
+	playerModel = mat4(
 		1.0f					// Identity Matrix
 		);
 
@@ -340,24 +355,45 @@ void Game::update()
 	DEBUG_MSG("Updating...");
 #endif
 	// Update Model View Projection.
-	if (enemyCube[0].getPos().z > -2)
+	
+
+	for (int i = 0; i < S_NUMOFENEMIES; i++)
 	{
-		model2 = translate(model2, glm::vec3(0, -10, 0));
-		//npcPosZ += 0.02
-		model3 = translate(model3, glm::vec3(0, 0, -100));
+		if (enemyCube[i].getPos().z > 6)
+		{
+			rnd = (rand() % 2) + 1;
+			if (rnd == 1)
+			{
+				sign = false;
+			}
+			else
+			{
+				sign = true;
+			}
+			rnd = rand() % 4;
+
+			if (sign)
+			{
+				rnd = -rnd;
+			}
+
+			//Centering cubes
+			enemyModel[i] = translate(enemyModel[i], glm::vec3(-enemyCube[i].getPos().x, 0, 0));
+
+			enemyModel[i] = translate(enemyModel[i], glm::vec3(rnd * 5.0f, 0, -106));
+			enemyCube[i] = EnemyCube(glm::vec3(rnd * 5.0f, 0, -100));
+		}
+		else
+		{
+			enemyModel[i] = translate(enemyModel[i], glm::vec3(0, 0, 0.02f));
+		}
 	}
-	else
-	{
-		model2 = translate(model2, glm::vec3(0, 0, 0.02f));
-		//npcPosZ += 0.02
-		model3 = translate(model3, glm::vec3(0, 0, 0.02f));
-	}
+	
 	timeSinceLastUpdate += clock.restart();
 	timeChange = timeSinceLastUpdate.asSeconds();
 	//totalTime = totalTime + timeChange;
 
-	playerCube.update();
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < S_NUMOFENEMIES; i++)
 	{
 		enemyCube[i].update();
 		if (checkCollision(playerCube.getPos(), enemyCube[i].getPos()))
@@ -382,39 +418,14 @@ void Game::render()
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	mvp = projection * view * model1;
 
 	glUseProgram(progID);
 
-	//VBO Data....vertices, colors and UV's appended
-	glBufferSubData(GL_ARRAY_BUFFER, 0 * VERTICES * sizeof(GLfloat), 3 * VERTICES * sizeof(GLfloat), vertices);
-	glBufferSubData(GL_ARRAY_BUFFER, 3 * VERTICES * sizeof(GLfloat), 4 * COLORS * sizeof(GLfloat), colors);
-	glBufferSubData(GL_ARRAY_BUFFER, ((3 * VERTICES) + (4 * COLORS)) * sizeof(GLfloat), 2 * UVS * sizeof(GLfloat), uvs);
-
-	// Send transformation to shader mvp uniform
-	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
-
-	//Set Active Texture .... 32
-	glActiveTexture(GL_TEXTURE0);
-	glUniform1i(textureID, 0);
-
-	//Set pointers for each parameter (with appropriate starting positions)
-	//https://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttribPointer.xml
-	glVertexAttribPointer(positionID, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, (VOID*)(3 * VERTICES * sizeof(GLfloat)));
-	glVertexAttribPointer(uvID, 2, GL_FLOAT, GL_FALSE, 0, (VOID*)(((3 * VERTICES) + (4 * COLORS)) * sizeof(GLfloat)));
-
-	//Enable Arrays
-	glEnableVertexAttribArray(positionID);
-	glEnableVertexAttribArray(colorID);
-	glEnableVertexAttribArray(uvID);
-
-
-	//Draw Element Arrays
-	glDrawElements(GL_TRIANGLES, 3 * INDICES, GL_UNSIGNED_INT, NULL);
-
-	cubeMaker(model2);
-	cubeMaker(model3);
+	cubeMaker(playerModel);
+	for (int i = 0; i < S_NUMOFENEMIES; i++)
+	{
+		cubeMaker(enemyModel[i]);
+	}
 
 	window.display();
 	
@@ -472,8 +483,8 @@ void Game::unload()
 
 bool Game::checkCollision(vec3 player, vec3 enemy)
 {
-	// player.z <= enemy.z && 
-	if (0 >= enemy.z && (player.x - 1 <= enemy.x && player.x + 1 >= enemy.x))
+	
+	if (player.z <= enemy.z + 1.5 && player.x >= enemy.x - 2 && player.x <= enemy.x + 2)
 	{
 		return true;
 	}

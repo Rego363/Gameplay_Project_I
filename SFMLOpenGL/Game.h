@@ -42,9 +42,10 @@ public:
 	void run();
 	
 private:
+	const static int S_NUMOFENEMIES = 20;
 	PlayerCube playerCube;
-	//std::vector<EnemyCube> enemyCube;
-	EnemyCube enemyCube[2];
+	EnemyCube enemyCube[S_NUMOFENEMIES];
+	mat4 enemyModel[S_NUMOFENEMIES];			// Model View Projection
 	std::ifstream vertexInput;
 	std::stringstream vss;
 	std::string vsLine;
@@ -56,9 +57,11 @@ private:
 	bool isRunning = false;
 	bool jump = false;
 	bool fall = false;
+	int rnd;
+	int zOffset; 
+	bool sign;
 	int count = 0;
 	int fallCount = 0;
-	bool rotSwitch;
 	MyVector3 gravity;
 	MyVector3 velocity;
 	glm::vec3 speed;

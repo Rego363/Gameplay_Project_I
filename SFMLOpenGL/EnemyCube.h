@@ -8,6 +8,7 @@ class EnemyCube
 {
 public:
 	EnemyCube();
+	EnemyCube(glm::vec3 pos);
 	~EnemyCube();
 	void update();
 	glm::vec3 getPos();
