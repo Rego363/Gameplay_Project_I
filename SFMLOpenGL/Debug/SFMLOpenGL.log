@@ -1,0 +1,5 @@
+﻿  EnemyCube.cpp
+c:\users\c00206167\desktop\gameplay project\sfmlopengl\matrix3.h(11): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+c:\users\c00206167\desktop\gameplay project\sfmlopengl\enemycube.cpp(17): warning C4305: '+=': truncation from 'double' to 'float'
+  SFMLOpenGL.vcxproj -> C:\Users\C00206167\Desktop\Gameplay Project\Debug\SFMLOpenGL.exe
+  SFMLOpenGL.vcxproj -> C:\Users\C00206167\Desktop\Gameplay Project\Debug\SFMLOpenGL.pdb (Full PDB)
